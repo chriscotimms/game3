@@ -3,6 +3,21 @@ function getRandom() {
   }
   getRandom();
 
+
+//// establish audio engine
+var AudioContext = window.AudioContext ||
+window.webkitAudioContext;
+
+const context = new AudioContext();
+const masterVolume = context.createGain();
+masterVolume.connect(context.destination);
+masterVolume.gain.value = .2;
+
+
+
+
+
+
 var canvas = document.getElementById("myCanvas");
 var ctx = canvas.getContext("2d");
 var ballRadius = 10;
@@ -24,6 +39,7 @@ var brickOffsetTop = 30;
 var brickOffsetLeft = 30;
 let score = 0;
 
+
 var bricks = [];
 for (var c = 0; c < brickColumnCount; c++) {
     bricks[c] = [];
@@ -32,8 +48,12 @@ for (var c = 0; c < brickColumnCount; c++) {
     }
 }
 
+
 document.addEventListener("keydown", keyDownHandler, false);
 document.addEventListener("keyup", keyUpHandler, false);
+
+
+
 
 function keyDownHandler(e) {
     if (e.key == "Right" || e.key == "ArrowRight") {
@@ -71,7 +91,6 @@ function collisionDetection() {
                     if (score === brickRowCount * brickColumnCount) {
                         alert("YOU WIN!");
                         document.location.reload();
-                        clearInterval(interval);
                     }
                 }
             }
@@ -118,13 +137,12 @@ function drawBricks() {
 }
 
 function calDistance() {
-    let bX = (Math.floor((x / (canvas.width - ballRadius)) * 12)+1)-1;
-    let bY = ((((Math.floor((y / (canvas.height - ballRadius)) *4)+1))*-1) + 4);
-    let pDl = (Math.floor((paddleX / (canvas.width - (paddleWidth / 2))) * 14)+1)-1;
-    let distanceY = (Math.floor((canvas.height - y) - ballRadius)) / canvas.height;
-    console.log(bY, bX, pDl, distanceY);
-    //console.log(paddleX);
-    
+    const bX = (Math.floor((x / (canvas.width - ballRadius)) * 12)+1)-1;
+    const bY = ((((Math.floor((y / (canvas.height - ballRadius)) *4)+1))*-1) + 4);
+    const pDl = (Math.floor((paddleX / (canvas.width - (paddleWidth / 2))) * 14)+1)-1;
+    const distanceY = (Math.floor((canvas.height - y) - ballRadius)) / canvas.height;
+    soundTiming = Math.floor((Math.pow(distanceY, 2) * 2000) + 100);
+       
 }
 
 function draw() {
@@ -134,7 +152,7 @@ function draw() {
     drawPaddle();
     drawScore();
     collisionDetection();
-    calDistance();
+    calDistance(); 
     
 
     if (x + dx > canvas.width - ballRadius || x + dx < ballRadius) {
@@ -155,7 +173,7 @@ function draw() {
         else {
             alert("GAME OVER");
             document.location.reload();
-            clearInterval(interval); // Needed for Chrome to end game
+        
         }
     }
 
@@ -168,12 +186,81 @@ function draw() {
 
     x += dx;
     y += dy;
+    requestAnimationFrame(draw);
+}
+
+draw();
+
+
+
+/////////////synth 
+let attackTime = 0.01;
+let sustainLevel = 0.125;
+let releaseTime = 0.125;
+
+let isPlaying = false;
+
+
+function noteLoop() {
+    if (isPlaying) {
+        playSynth();
+        //nextNote();
+        window.setTimeout(function() {
+            noteLoop();
+        }, soundTiming)
+    };
 }
 
 
+function playSynth() {
+    if (!isPlaying){
+        isPlaying = true;
+        noteLoop();
+    };
+    const osc = context.createOscillator();
+    const noteGain = context.createGain();
+    noteGain.gain.setValueAtTime(0, 0);
+    noteGain.gain.linearRampToValueAtTime(sustainLevel, context.currentTime + attackTime);
+    noteGain.gain.setValueAtTime(sustainLevel, context.currentTime + 0.125 - releaseTime);
+    noteGain.gain.linearRampToValueAtTime(0, context.currentTime + 0.125);
 
-var interval = setInterval(draw, 10);
+    osc.type = "sine";
+    osc.frequency.setValueAtTime(240, 0);
+    osc.start(0);
+    osc.stop((context.currentTime)+0.125);
+    
+    osc.connect(noteGain);
+    noteGain.connect(masterVolume);
+    delete osc;
+  };
 
+
+
+  function stopSynth() {
+    isPlaying = false;
+    masterVolume.gain.value = 0;
+    osc.connect(noteGain);
+    noteGain.connect(masterVolume);
+    delete osc;
+  };
+
+
+
+
+
+
+
+
+window.addEventListener("DOMContentLoaded", (event) => {
+    const startButton = document.getElementById("start-button");
+    const stopButton = document.getElementById("stop-button");
+    if (startButton) {
+        startButton.addEventListener("click", playSynth, false);
+    }
+    if (startButton) {
+        stopButton.addEventListener("click", stopSynth, false);
+    }
+})
 
 
 
