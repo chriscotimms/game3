@@ -117,6 +117,16 @@ function drawBricks() {
     }
 }
 
+function calDistance() {
+    let bX = (Math.floor((x / (canvas.width - ballRadius)) * 12)+1)-1;
+    let bY = ((((Math.floor((y / (canvas.height - ballRadius)) *4)+1))*-1) + 4);
+    let pDl = (Math.floor((paddleX / (canvas.width - (paddleWidth / 2))) * 14)+1)-1;
+    let distanceY = (Math.floor((canvas.height - y) - ballRadius)) / canvas.height;
+    console.log(bY, bX, pDl, distanceY);
+    //console.log(paddleX);
+    
+}
+
 function draw() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     drawBricks();
@@ -124,6 +134,8 @@ function draw() {
     drawPaddle();
     drawScore();
     collisionDetection();
+    calDistance();
+    
 
     if (x + dx > canvas.width - ballRadius || x + dx < ballRadius) {
         dx = -dx;
@@ -157,6 +169,8 @@ function draw() {
     x += dx;
     y += dy;
 }
+
+
 
 var interval = setInterval(draw, 10);
 
