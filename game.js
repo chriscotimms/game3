@@ -11,7 +11,7 @@ window.webkitAudioContext;
 const context = new AudioContext();
 const masterVolume = context.createGain();
 masterVolume.connect(context.destination);
-masterVolume.gain.value = .2;
+masterVolume.gain.value = .4;
 
 
 
@@ -23,8 +23,8 @@ var ctx = canvas.getContext("2d");
 var ballRadius = 10;
 var x = canvas.width / 2;
 var y = canvas.height - 30;
-var dx = getRandom()/2;
-var dy = getRandom()*-0.8;
+var dx = getRandom()/1;
+var dy = getRandom()*-2;
 var paddleHeight = 10;
 var paddleWidth = 75;
 var paddleX = (canvas.width - paddleWidth) / 2;
@@ -101,6 +101,7 @@ function collisionDetection() {
                     if (score === brickRowCount * brickColumnCount) {
                         alert("YOU WIN!");
                         document.location.reload();
+                        stopSynth();
                     }
                 }
             }
@@ -180,8 +181,10 @@ function draw() {
             }
         }
         else {
+            
             alert("GAME OVER");
             document.location.reload();
+            stopSynth();
         
         }
     }
@@ -257,9 +260,15 @@ function playSynth() {
   function stopSynth() {
     isPlaying = false;
     masterVolume.gain.value = 0;
+    osc.stop();
+    osc2.stop();
     osc.connect(noteGain);
     noteGain.connect(masterVolume);
+    osc2.connect(noteGain2);
+    noteGain2.connect(masterVolume);
     delete osc;
+    delete osc2;
+    
   };
 
 
