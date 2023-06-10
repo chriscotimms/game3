@@ -84,7 +84,10 @@ function keyUpHandler(e) {
 }
 
 function colChange() {
+    Math.random()
     colCh = '#'+(Math.random()*0xFFFFFF<<0).toString(16); 
+    colCh2 = '#'+(Math.random()*0xFFFFFF<<0).toString(16);
+    colCh3 = '#'+(Math.random()*0xFFFFFF<<0).toString(16);
 }
 colChange();
 
@@ -119,6 +122,16 @@ function drawBall() {
     ctx.beginPath();
     ctx.arc(x, y, ballRadius, 0, Math.PI * 2);
     ctx.fillStyle = colCh;
+    ctx.fill();
+    ctx.closePath();
+    ctx.beginPath();
+    ctx.arc(x, y, (ballRadius/1.2), 0, Math.PI * 2);
+    ctx.fillStyle = colCh2;
+    ctx.fill();
+    ctx.closePath();
+    ctx.beginPath();
+    ctx.arc(x, y, (ballRadius/1.5), 0, Math.PI * 2);
+    ctx.fillStyle = colCh3;
     ctx.fill();
     ctx.closePath();
 }
@@ -235,6 +248,7 @@ function noteLoop() {
 
 function playSynth() {
     if (!isPlaying){
+        canvas.style.display = "block";
         isPlaying = true;
         noteLoop();
         draw();
