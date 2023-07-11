@@ -6,11 +6,22 @@
   </head>
   <body>
     
+  <div class="container1"> 
+  <div id="description">
+  <p class="introText">An attempt to make an accessible paddle-based game using sound synthesised in Javascript.</p>
+  <p class="introText">Sonar effects locate the vertical distance of the ball form the paddle. The pitch made the paddle indicates it's horizontal location in relation to the ball. A lower pitch means it's situated to the left of the ball, a higher pitch to the right.</p> 
+  <p class="introText">Arrow controls left and right direct the paddle. Click Start to begin.</p>
+  </div>   
   <canvas id="myCanvas" width="480" height="620"></canvas>  
-  
+  </div>
+  <div class="container2">
+  <button class="btn" id="start-button">Start</button>
+  </div>
+  <div class="container2">
+  <p id="scoreArea"></p>
+  </div>
     <script src="game.js"></script>
-    <button id="start-button">Start</button>
-    <button id="stop-button">Stop</button>
+    
     <!-- maybe this could invovle sound to locate ball and paddle (matching frequency)-->
   </body>
 </html>

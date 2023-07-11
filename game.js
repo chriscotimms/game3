@@ -1,8 +1,3 @@
-function getRandom() {
-    return Math.random()+1;
-  }
-  getRandom();
-
 
 //// establish audio engine
 var AudioContext = window.AudioContext ||
@@ -11,11 +6,14 @@ window.webkitAudioContext;
 const context = new AudioContext();
 const masterVolume = context.createGain();
 masterVolume.connect(context.destination);
-masterVolume.gain.value = .4;
+masterVolume.gain.value = .8;
 
 
 
-
+function getRandom() {
+    return Math.random()+1;
+  }
+  getRandom();
 
 
 var canvas = document.getElementById("myCanvas");
@@ -83,8 +81,9 @@ function keyUpHandler(e) {
     }
 }
 
+//change color
 function colChange() {
-    Math.random()
+    //Math.random()
     colCh = '#'+(Math.random()*0xFFFFFF<<0).toString(16); 
     colCh2 = '#'+(Math.random()*0xFFFFFF<<0).toString(16);
     colCh3 = '#'+(Math.random()*0xFFFFFF<<0).toString(16);
@@ -113,9 +112,10 @@ function collisionDetection() {
 }
 
 function drawScore(){
-    ctx.font = "16px Arial";
+    document.getElementById("scoreArea").innerHTML = `Score: ${score}`;
+    /* ctx.font = "1.1em Arial";
     ctx.fillStyle = "#0095DD";
-    ctx.fillText(`Score: ${score}`, 8, 20);
+    ctx.fillText(`Score: ${score}`, 8, 20); */
 }
 
 function drawBall() {
@@ -253,7 +253,8 @@ function playSynth() {
         noteLoop();
         draw();
     };
-
+    console.log("hello");
+    document.getElementById("description").style.display = "none";
     const osc = context.createOscillator();
     const noteGain = context.createGain();
     noteGain.gain.setValueAtTime(0, 0);
@@ -324,9 +325,9 @@ window.addEventListener("DOMContentLoaded", (event) => {
     if (startButton) {
         startButton.addEventListener("click", playSynth, false);
     }
-    if (startButton) {
+    /* if (stopButton) {
         stopButton.addEventListener("click", stopSynth, false);
-    }
+    } */
 })
 
 
